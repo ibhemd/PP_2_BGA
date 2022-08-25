@@ -26,36 +26,39 @@ public class Levenshtein implements StringSimilarity {
         int[][] arr = new int[m+1][n+1];
 
         // 2. Schritt
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m+1; i++) {
             arr[i][0] = i;
         }
-        for (int j = 0; j < n; j++) {
+        for (int j = 0; j < n+1; j++) {
             arr[0][j] = j;
         }
 
-        // 3. Schritt
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) {
-                if (m == 0 && n == 0) {
-                    return  0;
-                } else if (n == 0) {
-                    return m;
-                } else if (m == 0) {
-                    return n;
-                } else if (x.charAt(i) == y.charAt(j)) {
-                    arr[i][j] = (int) compare(x.substring(0, m-1), y.substring(0, n-1));
+        // 3. Schritt // ohne Rekursion
+        if (m == 0 && n == 0) {
+            return 0;
+        } else if (n == 0) {
+            return m;
+        } else if (m == 0) {
+            return n;
+        }
+
+        for (int i = 1; i < m+1; i++) {
+            for (int j = 1; j < n+1; j++) {
+                if (x.charAt(i-1) == y.charAt(j-1)) {
+                    arr[i][j] = arr[i-1][j-1];
                 } else {
-                    double z1 = compare(x.substring(0,m-1),y.substring(0,n-1));
-                    double z2 = compare(x.substring(0,m-1),y);
-                    double z3 = compare(x,y.substring(0,n-1));
-                    double z = Math.min(z1, z2);
-                    return (int) (1+Math.min(z, z3));
+                    int min = Math.min(arr[i-1][j], arr[i][j-1]);
+                    min = Math.min(min, arr[i-1][j-1]);
+                    arr[i][j] = 1 + min;
                 }
             }
         }
 
         // 4. Schritt
-        res = (double) arr[m-1][n-1];
+        res = arr[m][n];
+
+        // Überführung
+        res = 1 - (res/Math.max(m,n));
 
         // END SOLUTION
         return res;
