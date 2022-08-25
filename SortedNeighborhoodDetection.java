@@ -44,8 +44,11 @@ public class SortedNeighborhoodDetection implements DuplicateDetection {
         int numComparisons = 0;
         // BEGIN SOLUTION
 
+        this.windowSize = 5;
+
         // 1. Schritt
         table.generateKeys(this.keyComponents);
+
 
         // 2. Schritt
         table.sortByKey();
